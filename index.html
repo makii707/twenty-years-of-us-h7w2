@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!-- 검색엔진에 노출되지 않도록 설정 -->
+<meta name="robots" content="noindex, nofollow">
+<title>스무 해, 우리 집의 노래</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Gowun+Dodum&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F3F5F1;
+    --ink: #23302A;
+    --muted: #6E7A73;
+    --accent: #8A4F6B;
+    --staff: #B8945A;
+    --surface: #FFFFFF;
+    --serif: "Gowun Batang", "Noto Serif KR", "Nanum Myeongjo", serif;
+    --sans: "Gowun Dodum", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1C2420;
+      --ink: #E8ECE7;
+      --muted: #9AA69F;
+      --accent: #D39BB5;
+      --staff: #CBB07A;
+      --surface: #26302B;
+      color-scheme: dark;
+    }
+  }
+  :root {
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  *, *::before, *::after { box-sizing: inherit; }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--serif);
+    line-height: 1.85;
+    font-size: 17px;
+  }
+  img { max-width: 100%; display: block; }
+  .wrap { max-width: 640px; margin: 0 auto; padding: 0 22px; }
+
+  /* 첫 화면 */
+  .hero { padding: 48px 0 56px; }
+  .hero-photo {
+    aspect-ratio: 4 / 5;
+    border-radius: 2px;
+    overflow: hidden;
+    background: var(--surface);
+  }
+  .hero-photo img { width: 100%; height: 100%; object-fit: cover; }
+  .hero h1 {
+    font-size: clamp(2rem, 8vw, 2.8rem);
+    line-height: 1.3;
+    margin: 32px 0 12px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  .hero .dates { font-family: var(--sans); color: var(--muted); margin: 0; }
+  .hero .count { margin: 20px 0 0; }
+  .hero .count strong { color: var(--accent); font-size: 1.25em; }
+
+  /* 오선지 모양 타임라인 */
+  .timeline { position: relative; padding: 24px 0 24px 64px; }
+  .timeline::before {
+    content: "";
+    position: absolute;
+    top: 0; bottom: 0; left: 14px;
+    width: 26px;
+    background: repeating-linear-gradient(
+      to right,
+      var(--staff) 0, var(--staff) 1px,
+      transparent 1px, transparent 6px
+    );
+    opacity: 0.55;
+  }
+  .bar { position: relative; padding: 8px 0 56px; }
+  .bar::before {
+    content: "";
+    position: absolute;
+    left: -54px; top: 18px;
+    width: 34px; height: 2px;
+    background: var(--ink);
+  }
+  .bar .note {
+    position: absolute;
+    left: -44px; top: 10px;
+    width: 14px; height: 11px;
+    border-radius: 50%;
+    background: var(--accent);
+    transform: rotate(-20deg);
+  }
+  .bar .year {
+    font-family: var(--sans);
+    color: var(--muted);
+    font-size: 0.9rem;
+    margin: 0;
+  }
+  .bar h2 { font-size: 1.35rem; line-height: 1.45; margin: 2px 0 10px; }
+  .bar p.text { margin: 0 0 16px; }
+  .photos {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding-bottom: 6px;
+  }
+  .photos button {
+    flex: 0 0 auto;
+    width: 78%;
+    max-width: 360px;
+    aspect-ratio: 4 / 3;
+    padding: 0;
+    border: 0;
+    background: var(--surface);
+    cursor: zoom-in;
+    scroll-snap-align: start;
+    overflow: hidden;
+    border-radius: 2px;
+  }
+  .photos button:only-child { width: 100%; max-width: none; }
+  .photos img { width: 100%; height: 100%; object-fit: cover; }
+  .missing {
+    width: 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--sans);
+    font-size: 0.85rem;
+    color: var(--muted);
+    border: 1px dashed var(--muted);
+    padding: 12px;
+    text-align: center;
+  }
+
+  /* 아이들 메시지 */
+  .kids { padding: 40px 0 16px; }
+  .kids h2, .letter h2 { font-size: 1.5rem; margin: 0 0 24px; }
+  .kid { margin: 0 0 28px; padding-left: 18px; border-left: 3px solid var(--accent); }
+  .kid p { margin: 0; }
+  .kid .from { font-family: var(--sans); color: var(--muted); font-size: 0.9rem; margin-top: 6px; }
+
+  /* 마지막 편지 */
+  .letter { padding: 40px 0 80px; }
+  .letter p { margin: 0 0 1.2em; }
+  .letter .sign { text-align: right; margin-top: 32px; }
+
+  /* 사진 크게 보기 */
+  .viewer {
+    position: fixed; inset: 0;
+    background: rgba(0, 0, 0, 0.92);
+    display: none;
+    align-items: center; justify-content: center;
+    padding: 24px;
+    z-index: 20;
+  }
+  .viewer.open { display: flex; }
+  .viewer img { max-height: 90vh; object-fit: contain; }
+  .viewer button {
+    position: absolute;
+    top: calc(12px + env(safe-area-inset-top, 0px)); right: 12px;
+    background: none; border: 0;
+    color: #FFFFFF; font-size: 2rem; cursor: pointer;
+  }
+  button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+</style>
+</head>
+<body>
+
+<main class="wrap">
+  <header class="hero">
+    <div class="hero-photo" id="heroPhoto"></div>
+    <h1>스무 해,<br>우리 집의 노래</h1>
+    <p class="dates" id="dates"></p>
+    <p class="count" id="count"></p>
+  </header>
+
+  <section class="timeline" id="timeline" aria-label="20년 타임라인"></section>
+
+  <section class="kids" id="kids">
+    <h2>아이들이 엄마 아빠에게</h2>
+  </section>
+
+  <section class="letter">
+    <h2>당신에게</h2>
+    <div id="letter"></div>
+    <p class="sign" id="sign"></p>
+  </section>
+</main>
+
+<div class="viewer" id="viewer" role="dialog" aria-modal="true" aria-label="사진 크게 보기">
+  <button type="button" id="viewerClose" aria-label="닫기">&times;</button>
+  <img id="viewerImg" alt="">
+</div>
+
+<script>
+  // ===== 여기만 고치면 됩니다 =====
+  const CONFIG = {
+    weddingDate: "2006-11-04",
+    husband: "형원",
+    heroPhoto: "photos/wedding.jpg"
+  };
+
+  // 연도별 이야기. photos 에는 photos 폴더 안의 파일 이름을 넣습니다.
+  const ENTRIES = [
+    {
+      year: 2006, title: "우리가 부부가 된 해",
+      text: "떨리는 손으로 반지를 끼워주던 날. 그날 당신이 웃던 얼굴을 아직도 기억해요.",
+      photos: ["2006-wedding-1.jpg", "2006-wedding-2.jpg"]
+    },
+    {
+      year: 2008, title: "첫째가 우리에게 왔어요",
+      text: "처음 안아본 날, 이렇게 작은 사람이 우리 둘을 닮았다는 게 신기했지요.",
+      photos: ["2008-first.jpg"]
+    },
+    {
+      year: 2011, title: "둘째, 그리고 시끄러워진 집",
+      text: "형제가 생기자 집이 두 배로 시끄러워지고, 두 배로 따뜻해졌어요.",
+      photos: ["2011-second-1.jpg", "2011-second-2.jpg", "2011-second-3.jpg"]
+    },
+    {
+      year: 2014, title: "막내딸이 태어난 해",
+      text: "아들 둘 사이에서 막내딸이 태어나던 날, 당신은 울고 나는 웃었어요.",
+      photos: ["2014-third.jpg"]
+    },
+    {
+      year: 2018, title: "다섯이 함께 떠난 첫 여행",
+      text: "짐은 산더미, 차 안은 전쟁터. 그래도 사진 속 우리는 다 웃고 있네요.",
+      photos: ["2018-trip-1.jpg", "2018-trip-2.jpg"]
+    },
+    {
+      year: 2026, title: "그리고 스무 번째 가을",
+      text: "어느새 훌쩍 자란 아이들 옆에서, 여전히 당신과 함께라서 고마워요.",
+      photos: ["2026-family.jpg"]
+    }
+  ];
+
+  const KIDS = [
+    { from: "첫째", text: "엄마 아빠 결혼 20주년 축하해요. 두 분처럼 사는 게 제 꿈이에요." },
+    { from: "둘째", text: "잔소리도 사랑인 거 이제 알아요. 앞으로 20년도 잘 부탁드려요." },
+    { from: "막내", text: "엄마 아빠 딸이라서 행복해요. 사랑해요." }
+  ];
+
+  const LETTER = [
+    "20년 전 그날, 나는 당신에게 행복하게 해주겠다고 약속했지요.",
+    "돌아보면 그 약속을 지킨 건 내가 아니라 당신이었어요. 세 아이를 키우며 힘든 날에도 이 집을 따뜻하게 지켜준 사람은 언제나 당신이었으니까요.",
+    "근사한 선물은 못 하지만, 우리가 함께 지나온 시간들을 한곳에 모아봤어요. 앞으로의 스무 해도 지금처럼 곁에 있어 주세요.",
+    "사랑합니다."
+  ];
+  // ===== 고칠 부분 끝 =====
+
+  // 사진이 아직 없으면 파일 이름을 보여주는 자리 표시
+  function makePlaceholder(name) {
+    const div = document.createElement("div");
+    div.className = "missing";
+    div.textContent = "photos/" + name + " 사진을 넣어주세요";
+    return div;
+  }
+
+  function makeImage(src, alt, onMissing) {
+    const img = document.createElement("img");
+    img.src = src;
+    img.alt = alt;
+    img.loading = "lazy";
+    img.addEventListener("error", function () {
+      img.replaceWith(onMissing());
+    });
+    return img;
+  }
+
+  // 결혼 기념일과 함께한 날짜 계산
+  const start = new Date(CONFIG.weddingDate + "T00:00:00");
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const days = Math.floor((today - start) / 86400000) + 1;
+  document.getElementById("dates").textContent =
+    start.getFullYear() + "년 " + (start.getMonth() + 1) + "월 " + start.getDate() + "일부터";
+  document.getElementById("count").innerHTML =
+    "오늘은 우리가 함께한 지 <strong>" + days.toLocaleString("ko-KR") + "</strong>번째 날이에요.";
+
+  document.getElementById("heroPhoto").appendChild(
+    makeImage(CONFIG.heroPhoto, "결혼식 사진", function () {
+      return makePlaceholder("wedding.jpg");
+    })
+  );
+
+  // 타임라인 그리기
+  const timeline = document.getElementById("timeline");
+  ENTRIES.forEach(function (entry) {
+    const bar = document.createElement("article");
+    bar.className = "bar";
+    bar.innerHTML =
+      '<span class="note" aria-hidden="true"></span>' +
+      '<p class="year">' + entry.year + '년</p>' +
+      "<h2></h2>" +
+      '<p class="text"></p>' +
+      '<div class="photos"></div>';
+    bar.querySelector("h2").textContent = entry.title;
+    bar.querySelector(".text").textContent = entry.text;
+
+    const box = bar.querySelector(".photos");
+    entry.photos.forEach(function (name) {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.setAttribute("aria-label", entry.year + "년 사진 크게 보기");
+      const src = "photos/" + name;
+      btn.appendChild(makeImage(src, entry.title, function () {
+        btn.disabled = true;
+        return makePlaceholder(name);
+      }));
+      btn.addEventListener("click", function () {
+        openViewer(src, entry.title);
+      });
+      box.appendChild(btn);
+    });
+    timeline.appendChild(bar);
+  });
+
+  // 아이들 메시지
+  const kidsBox = document.getElementById("kids");
+  KIDS.forEach(function (kid) {
+    const div = document.createElement("div");
+    div.className = "kid";
+    div.innerHTML = '<p></p><p class="from"></p>';
+    div.querySelector("p").textContent = kid.text;
+    div.querySelector(".from").textContent = kid.from + "가";
+    kidsBox.appendChild(div);
+  });
+
+  // 편지
+  const letterBox = document.getElementById("letter");
+  LETTER.forEach(function (line) {
+    const p = document.createElement("p");
+    p.textContent = line;
+    letterBox.appendChild(p);
+  });
+  document.getElementById("sign").textContent = CONFIG.husband + " 드림";
+
+  // 사진 크게 보기
+  const viewer = document.getElementById("viewer");
+  const viewerImg = document.getElementById("viewerImg");
+  function openViewer(src, alt) {
+    viewerImg.src = src;
+    viewerImg.alt = alt;
+    viewer.classList.add("open");
+    document.getElementById("viewerClose").focus();
+  }
+  function closeViewer() {
+    viewer.classList.remove("open");
+  }
+  document.getElementById("viewerClose").addEventListener("click", closeViewer);
+  viewer.addEventListener("click", function (e) {
+    if (e.target === viewer) {
+      closeViewer();
+    }
+  });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") {
+      closeViewer();
+    }
+  });
+</script>
+</body>
+</html>
