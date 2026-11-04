@@ -212,37 +212,45 @@
     heroPhoto: "photos/wedding.jpg"
   };
 
-  // 연도별 이야기. photos 에는 photos 폴더 안의 파일 이름을 넣습니다.
+  // 연도별 이야기
+  // date 는 비워두면 연도만 표시됩니다. 예: date: "8월 8일"
+  // photos 에는 photos 폴더 안의 파일 이름을 넣습니다.
+  // 세로 사진에서 얼굴이 잘리면 { file: "이름.jpg", focus: "center 20%" } 처럼 보여줄 위치를 지정합니다.
   const ENTRIES = [
     {
-      year: 2006, title: "우리가 부부가 된 해",
+      year: 2006, date: "11월 4일", title: "우리가 부부가 된 날",
       text: "떨리는 손으로 반지를 끼워주던 날. 그날 당신이 웃던 얼굴을 아직도 기억해요.",
-      photos: ["2006-wedding-1.jpg", "2006-wedding-2.jpg"]
+      photos: []
     },
     {
-      year: 2008, title: "예찬이가 우리에게 왔어요",
-      text: "처음 안아본 날, 이렇게 작은 사람이 우리 둘을 닮았다는 게 신기했지요.",
-      photos: ["2008-yechan.jpg"]
+      year: 2008, date: "", title: "예찬이가 우리에게 왔어요",
+      text: "둘이서 손꼽아 기다리던 첫 아이. 처음 안아본 날, 이렇게 작은 사람이 우리 둘을 닮았다는 게 신기했지요.",
+      photos: [{ file: "yechan-pregnant.jpg", focus: "center 10%" }, "yechan-born.jpg"]
     },
     {
-      year: 2011, title: "예준이, 그리고 시끄러워진 집",
+      year: 2011, date: "", title: "예준이, 그리고 시끄러워진 집",
       text: "예찬이에게 동생이 생기자 집이 두 배로 시끄러워지고, 두 배로 따뜻해졌어요.",
-      photos: ["yechan-yejun.jpg"]
+      photos: ["yejun-born.jpg", "yechan-yejun.jpg"]
     },
     {
-      year: 2014, title: "막내딸 예온이가 태어난 해",
+      year: 2014, date: "", title: "막내딸 예온이가 태어난 날",
       text: "아들 둘 사이에서 예온이가 태어나던 날, 당신은 울고 나는 웃었어요.",
-      photos: ["yeon-birth.jpg"]
+      photos: [{ file: "yeon-born.jpg", focus: "center 27%" }, { file: "yeon-birth.jpg", focus: "center 62%" }]
     },
     {
-      year: 2018, title: "다섯이 함께 떠난 첫 여행",
-      text: "짐은 산더미, 차 안은 전쟁터. 그래도 사진 속 우리는 다 웃고 있네요.",
-      photos: ["2018-trip-1.jpg", "2018-trip-2.jpg"]
+      year: 2019, date: "", title: "다섯이 함께 오른 산",
+      text: "숨은 차고 다리는 무거웠지만, 다섯이 함께라서 정상보다 그 길이 더 즐거웠어요.",
+      photos: ["family-hiking.jpg"]
     },
     {
-      year: 2026, title: "그리고 스무 번째 가을",
+      year: 2024, date: "", title: "파란 하늘 아래, 괌에서",
+      text: "어느새 엄마 아빠보다 훌쩍 커버린 아들들과 모자 쓴 예온이. 다섯이 나란히 섰던 그날의 하늘을 잊지 못할 거예요.",
+      photos: [{ file: "family-guam.jpg", focus: "center 71%" }]
+    },
+    {
+      year: 2026, date: "", title: "그리고 스무 번째 가을",
       text: "어느새 훌쩍 자란 아이들 옆에서, 여전히 당신과 함께라서 고마워요.",
-      photos: ["2026-family.jpg"]
+      photos: []
     }
   ];
 
@@ -296,23 +304,33 @@
     bar.className = "bar";
     bar.innerHTML =
       '<span class="note" aria-hidden="true"></span>' +
-      '<p class="year">' + entry.year + '년</p>' +
+      '<p class="year"></p>' +
       "<h2></h2>" +
       '<p class="text"></p>' +
       '<div class="photos"></div>';
+    bar.querySelector(".year").textContent = entry.year + "년" + (entry.date ? " " + entry.date : "");
     bar.querySelector("h2").textContent = entry.title;
     bar.querySelector(".text").textContent = entry.text;
 
     const box = bar.querySelector(".photos");
-    entry.photos.forEach(function (name) {
+    if (entry.photos.length === 0) {
+      box.remove();
+    }
+    entry.photos.forEach(function (item) {
+      // 사진은 파일 이름 문자열 또는 { file, focus } 형태
+      const name = typeof item === "string" ? item : item.file;
       const btn = document.createElement("button");
       btn.type = "button";
       btn.setAttribute("aria-label", entry.year + "년 사진 크게 보기");
       const src = "photos/" + name;
-      btn.appendChild(makeImage(src, entry.title, function () {
+      const img = makeImage(src, entry.title, function () {
         btn.disabled = true;
         return makePlaceholder(name);
-      }));
+      });
+      if (typeof item !== "string" && item.focus) {
+        img.style.objectPosition = item.focus;
+      }
+      btn.appendChild(img);
       btn.addEventListener("click", function () {
         openViewer(src, entry.title);
       });
