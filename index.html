@@ -46,6 +46,8 @@
     font-family: var(--serif);
     line-height: 1.85;
     font-size: 17px;
+    word-break: keep-all;
+    overflow-wrap: break-word;
   }
   img { max-width: 100%; display: block; }
   .wrap { max-width: 640px; margin: 0 auto; padding: 0 22px; }
@@ -114,6 +116,17 @@
     overflow-x: auto;
     scroll-snap-type: x mandatory;
     padding-bottom: 6px;
+    /* 오른쪽 여백까지 사진 줄을 늘려 다음 사진이 화면 끝에서 이어지게 함 */
+    margin-right: -22px;
+    padding-right: 22px;
+    scrollbar-width: none;
+  }
+  .photos::-webkit-scrollbar { display: none; }
+  .swipe {
+    font-family: var(--sans);
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin: 8px 0 0;
   }
   .photos button {
     flex: 0 0 auto;
@@ -321,6 +334,24 @@
       });
       box.appendChild(btn);
     });
+
+    // 사진이 여러 장이면 넘기기 안내와 현재 위치 표시
+    const total = entry.photos.length;
+    if (total > 1) {
+      const hint = document.createElement("p");
+      hint.className = "swipe";
+      hint.textContent = "옆으로 넘겨보세요  1 / " + total;
+      bar.appendChild(hint);
+      box.addEventListener("scroll", function () {
+        const step = box.firstElementChild.offsetWidth + 10;
+        let current = Math.min(total, Math.round(box.scrollLeft / step) + 1);
+        // 마지막 사진은 왼쪽 끝까지 오지 않으므로 끝에 닿으면 마지막 번호로 표시
+        if (box.scrollLeft + box.clientWidth >= box.scrollWidth - 2) {
+          current = total;
+        }
+        hint.textContent = "옆으로 넘겨보세요  " + current + " / " + total;
+      });
+    }
     timeline.appendChild(bar);
   });
 
