@@ -154,15 +154,9 @@
     text-align: center;
   }
 
-  /* 아이들 메시지 */
-  .kids { padding: 40px 0 16px; }
-  .kids h2, .letter h2 { font-size: 1.5rem; margin: 0 0 24px; }
-  .kid { margin: 0 0 28px; padding-left: 18px; border-left: 3px solid var(--accent); }
-  .kid p { margin: 0; }
-  .kid .from { font-family: var(--sans); color: var(--muted); font-size: 0.9rem; margin-top: 6px; }
-
   /* 마지막 편지 */
   .letter { padding: 40px 0 80px; }
+  .letter h2 { font-size: 1.5rem; margin: 0 0 24px; }
   .letter p { margin: 0 0 1.2em; }
   .letter .sign { text-align: right; margin-top: 32px; }
 
@@ -198,10 +192,6 @@
 
   <section class="timeline" id="timeline" aria-label="20년 타임라인"></section>
 
-  <section class="kids" id="kids">
-    <h2>아이들이 엄마 아빠에게</h2>
-  </section>
-
   <section class="letter">
     <h2>당신에게</h2>
     <div id="letter"></div>
@@ -230,19 +220,19 @@
       photos: ["2006-wedding-1.jpg", "2006-wedding-2.jpg"]
     },
     {
-      year: 2008, title: "첫째가 우리에게 왔어요",
+      year: 2008, title: "예찬이가 우리에게 왔어요",
       text: "처음 안아본 날, 이렇게 작은 사람이 우리 둘을 닮았다는 게 신기했지요.",
-      photos: ["2008-first.jpg"]
+      photos: ["2008-yechan.jpg"]
     },
     {
-      year: 2011, title: "둘째, 그리고 시끄러워진 집",
-      text: "형제가 생기자 집이 두 배로 시끄러워지고, 두 배로 따뜻해졌어요.",
-      photos: ["2011-second-1.jpg", "2011-second-2.jpg", "2011-second-3.jpg"]
+      year: 2011, title: "예준이, 그리고 시끄러워진 집",
+      text: "예찬이에게 동생이 생기자 집이 두 배로 시끄러워지고, 두 배로 따뜻해졌어요.",
+      photos: ["yechan-yejun.jpg"]
     },
     {
-      year: 2014, title: "막내딸이 태어난 해",
-      text: "아들 둘 사이에서 막내딸이 태어나던 날, 당신은 울고 나는 웃었어요.",
-      photos: ["2014-third.jpg"]
+      year: 2014, title: "막내딸 예온이가 태어난 해",
+      text: "아들 둘 사이에서 예온이가 태어나던 날, 당신은 울고 나는 웃었어요.",
+      photos: ["yeon-birth.jpg"]
     },
     {
       year: 2018, title: "다섯이 함께 떠난 첫 여행",
@@ -256,15 +246,9 @@
     }
   ];
 
-  const KIDS = [
-    { from: "첫째", text: "엄마 아빠 결혼 20주년 축하해요. 두 분처럼 사는 게 제 꿈이에요." },
-    { from: "둘째", text: "잔소리도 사랑인 거 이제 알아요. 앞으로 20년도 잘 부탁드려요." },
-    { from: "막내", text: "엄마 아빠 딸이라서 행복해요. 사랑해요." }
-  ];
-
   const LETTER = [
     "20년 전 그날, 나는 당신에게 행복하게 해주겠다고 약속했지요.",
-    "돌아보면 그 약속을 지킨 건 내가 아니라 당신이었어요. 세 아이를 키우며 힘든 날에도 이 집을 따뜻하게 지켜준 사람은 언제나 당신이었으니까요.",
+    "돌아보면 그 약속을 지킨 건 내가 아니라 당신이었어요. 예찬, 예준, 예온이를 키우며 힘든 날에도 이 집을 따뜻하게 지켜준 사람은 언제나 당신이었으니까요.",
     "근사한 선물은 못 하지만, 우리가 함께 지나온 시간들을 한곳에 모아봤어요. 앞으로의 스무 해도 지금처럼 곁에 있어 주세요.",
     "사랑합니다."
   ];
@@ -353,17 +337,6 @@
       });
     }
     timeline.appendChild(bar);
-  });
-
-  // 아이들 메시지
-  const kidsBox = document.getElementById("kids");
-  KIDS.forEach(function (kid) {
-    const div = document.createElement("div");
-    div.className = "kid";
-    div.innerHTML = '<p></p><p class="from"></p>';
-    div.querySelector("p").textContent = kid.text;
-    div.querySelector(".from").textContent = kid.from + "가";
-    kidsBox.appendChild(div);
   });
 
   // 편지
